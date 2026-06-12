@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sitebana — Your Shop Online in 60 Seconds</title>
+<title>Sitebana — Websites for Indian Small Businesses</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -633,13 +633,13 @@ function Landing({user,onGetStarted,onLogin,onDashboard,hasBiz}){
       {/* HERO */}
       <section className="hero">
         <div className="hero-badge"><span className="badge-dot"/>&nbsp;63 million Indian businesses. Less than 5% online.</div>
-        <h1>Your shop online<br/>in <span className="acc">60 seconds</span></h1>
+        <h1>Get your business online<br/>in <span className="acc">60 seconds</span></h1>
         <p className="hero-sub">Type your business name. AI builds your full website instantly. Share the link with customers today — no coding, no designer, no hassle.</p>
         <div className="demo-box">
           <div className="demo-lbl">Try it — type your shop name</div>
           <div className="demo-row">
             <input className="demo-in" value={demoVal} onChange={e=>setDemoVal(e.target.value)} placeholder="e.g. Sharma Beauty Salon" onKeyDown={e=>e.key==='Enter'&&onGetStarted()}/>
-            <button className="btn btn-primary" onClick={onGetStarted}>Build my site →</button>
+            <button className="btn btn-primary" onClick={onGetStarted}>Start Free →</button>
           </div>
           {demoVal.length>2&&<div className="demo-preview show">
             <div className="dp-url">sitebana.vercel.app/{slug(demoVal)}</div>
