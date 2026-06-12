@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sitebana — Your Shop Online in 60 Seconds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A0F1E;
+  --saffron:#FF6B00;
+  --saffron-l:#FF8C3A;
+  --saffron-bg:#FFF4E6;
+  --white:#fff;
+  --g50:#F8F9FA;
+  --g100:#F1F3F5;
+  --g200:#E9ECEF;
+  --g300:#CED4DA;
+  --g400:#ADB5BD;
+  --g500:#868E96;
+  --g600:#6C757D;
+  --g700:#495057;
+  --g900:#212529;
+  --green:#16A34A;
+  --green-bg:#F0FDF4;
+  --blue:#2563EB;
+  --blue-bg:#EFF6FF;
+  --red:#DC2626;
+  --red-bg:#FEF2F2;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--g50);color:var(--g900);overflow-x:hidden}
+#root{min-height:100vh}
+
+/* ── UTILITIES ── */
+.outfit{font-family:'Outfit',sans-serif}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.btn-primary{background:var(--saffron);color:#fff;padding:12px 24px}
+.btn-primary:hover:not(:disabled){background:var(--saffron-l);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1.5px solid var(--g300);color:var(--g700);padding:11px 24px}
+.btn-outline:hover:not(:disabled){border-color:var(--saffron);color:var(--saffron)}
+.btn-ghost{background:transparent;color:var(--g600);padding:10px 16px}
+.btn-ghost:hover{background:var(--g100);color:var(--g900)}
+.btn-sm{font-size:13px;padding:8px 16px;border-radius:8px}
+.btn-lg{font-size:17px;padding:15px 32px;border-radius:12px}
+.card{background:#fff;border:1px solid var(--g100);border-radius:16px;padding:24px}
+.input{width:100%;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;font-size:15px;font-family:'Inter',sans-serif;color:var(--g900);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.input:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(255,107,0,.1)}
+.input::placeholder{color:var(--g400)}
+.label{display:block;font-size:13px;font-weight:500;color:var(--g700);margin-bottom:6px}
+.hint{font-size:12px;color:var(--g400);margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-saffron{background:var(--saffron-bg);color:var(--saffron)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-gray{background:var(--g100);color:var(--g600)}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--g900);color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .25s ease;max-width:320px}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,15,30,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,107,0,.15);height:60px;display:flex;align-items:center;padding:0 24px}
+.nav-inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;color:#fff;cursor:pointer;letter-spacing:-.5px}
+.logo span{color:var(--saffron)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-link{color:rgba(255,255,255,.65);font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;transition:color .2s;background:none;border:none;font-family:'Inter',sans-serif}
+.nav-link:hover{color:#fff}
+
+/* ── LANDING ── */
+.hero{background:var(--navy);padding:120px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(255,107,0,.1) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,0,.1);border:1px solid rgba(255,107,0,.25);color:#FF8C3A;font-size:13px;font-weight:500;padding:6px 16px;border-radius:40px;margin-bottom:28px}
+.badge-dot{width:6px;height:6px;background:var(--saffron);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(36px,6vw,68px);line-height:1.05;color:#fff;letter-spacing:-1.5px;margin-bottom:18px;max-width:880px;margin-left:auto;margin-right:auto}
+.hero h1 .acc{color:var(--saffron)}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.55);max-width:520px;margin:0 auto 36px;line-height:1.65}
+.demo-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:24px;max-width:560px;margin:0 auto 44px;text-align:left}
+.demo-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:10px}
+.demo-row{display:flex;gap:8px}
+.demo-in{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:9px;padding:13px 16px;color:#fff;font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.demo-in::placeholder{color:rgba(255,255,255,.28)}
+.demo-in:focus{border-color:var(--saffron)}
+.demo-preview{display:none;margin-top:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;animation:fadeUp .2s ease}
+.demo-preview.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.dp-url{font-size:12px;color:rgba(255,107,0,.8);margin-bottom:5px}
+.dp-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;color:#fff;margin-bottom:2px}
+.dp-ok{font-size:12px;color:rgba(255,255,255,.4)}
+.hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:0}
+.hs-num{font-family:'Outfit',sans-serif;font-weight:800;font-size:32px;color:#fff}
+.hs-num b{color:var(--saffron)}
+.hs-lbl{font-size:12px;color:rgba(255,255,255,.38);text-align:center;margin-top:2px}
+
+/* ── SECTIONS ── */
+.section{padding:72px 24px}
+.wrap{max-width:1100px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--saffron);margin-bottom:10px}
+.sec-h{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(26px,4vw,42px);letter-spacing:-.5px;line-height:1.1;margin-bottom:12px}
+.sec-sub{font-size:16px;color:var(--g500);max-width:520px;line-height:1.6}
+.dark-sec{background:var(--navy)}
+.dark-sec .sec-h{color:#fff}
+.dark-sec .sec-sub{color:rgba(255,255,255,.45)}
+
+/* steps */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:44px}
+.step-card{background:#fff;border:1px solid var(--g100);border-radius:18px;padding:26px;transition:all .2s}
+.step-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.07);transform:translateY(-2px)}
+.step-n{font-family:'Outfit',sans-serif;font-weight:800;font-size:38px;color:var(--g100);line-height:1;margin-bottom:12px}
+.step-e{font-size:24px;margin-bottom:10px}
+.step-t{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:7px}
+.step-d{font-size:14px;color:var(--g500);line-height:1.6}
+.step-tag{display:inline-block;background:var(--saffron-bg);color:var(--saffron);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:10px}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:44px}
+.feat-card{border:1px solid var(--g100);border-radius:16px;padding:24px;transition:all .2s}
+.feat-card:hover{border-color:var(--saffron);box-shadow:0 0 0 4px rgba(255,107,0,.05)}
+.feat-ico{width:42px;height:42px;background:var(--saffron-bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.feat-t{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:7px}
+.feat-d{font-size:14px;color:var(--g500);line-height:1.6}
+
+/* niches */
+.niche-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:36px}
+.niche-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.niche-card:hover{background:rgba(255,107,0,.08);border-color:rgba(255,107,0,.28);transform:translateY(-2px)}
+.niche-e{font-size:24px;margin-bottom:6px}
+.niche-n{font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;color:#fff}
+
+/* pricing */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:44px;align-items:start}
+.pc{background:#fff;border:1px solid var(--g100);border-radius:18px;padding:28px}
+.pc.pop{border:2px solid var(--saffron);position:relative}
+.pop-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--saffron);color:#fff;font-size:11px;font-weight:700;padding:3px 14px;border-radius:20px;white-space:nowrap}
+.pc-name{font-size:14px;font-weight:600;color:var(--g600);margin-bottom:7px}
+.pc-price{font-family:'Outfit',sans-serif;font-weight:800;font-size:38px;line-height:1;margin-bottom:10px}
+.pc-price sub{font-size:14px;font-weight:400;color:var(--g500)}
+.pc-desc{font-size:13px;color:var(--g500);margin-bottom:20px;line-height:1.5}
+.pc-feats{list-style:none;margin-bottom:24px}
+.pc-feats li{font-size:14px;color:var(--g700);padding:6px 0;border-bottom:1px solid var(--g100);display:flex;align-items:center;gap:8px}
+.pc-feats li:last-child{border:none}
+.ck{color:var(--green);font-weight:700;font-size:15px}
+
+/* testimonials */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:16px;margin-top:36px}
+.testi{background:var(--g50);border:1px solid var(--g100);border-radius:16px;padding:22px}
+.t-stars{color:#F59E0B;font-size:13px;margin-bottom:10px}
+.t-text{font-size:14px;color:var(--g700);line-height:1.65;margin-bottom:14px;font-style:italic}
+.t-auth{display:flex;align-items:center;gap:9px}
+.t-av{width:34px;height:34px;border-radius:50%;background:var(--saffron-bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--saffron)}
+.t-name{font-size:13px;font-weight:600}
+.t-biz{font-size:11px;color:var(--g500)}
+
+/* browser preview */
+.browser{background:var(--g50);border:1px solid var(--g100);border-radius:18px;overflow:hidden;margin-top:36px;box-shadow:0 16px 48px rgba(0,0,0,.09)}
+.brow-bar{background:#fff;border-bottom:1px solid var(--g100);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.b-dots{display:flex;gap:5px}
+.b-dot{width:9px;height:9px;border-radius:50%}
+.b-url{flex:1;background:var(--g100);border-radius:40px;padding:5px 14px;font-size:12px;color:var(--g500)}
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:420px;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.modal-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:24px;margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--g500);margin-bottom:24px}
+.field{margin-bottom:16px}
+.auth-switch{text-align:center;margin-top:16px;font-size:14px;color:var(--g500)}
+.auth-switch button{background:none;border:none;color:var(--saffron);font-weight:600;cursor:pointer;font-size:14px;font-family:'Inter',sans-serif}
+
+/* ── ONBOARDING ── */
+.onb-wrap{min-height:100vh;background:var(--g50);display:flex;flex-direction:column}
+.onb-top{background:var(--navy);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.progress-row{background:#fff;border-bottom:1px solid var(--g100);padding:18px 24px}
+.progress-inner{max-width:540px;margin:0 auto}
+.prog-steps{display:flex;align-items:center}
+.prog-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.prog-step:not(:last-child)::after{content:'';position:absolute;top:13px;left:calc(50% + 13px);right:calc(-50% + 13px);height:2px;background:var(--g200)}
+.prog-step.done:not(:last-child)::after,.prog-step.active:not(:last-child)::after{background:var(--saffron)}
+.prog-dot{width:26px;height:26px;border-radius:50%;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g400);z-index:1;transition:all .3s}
+.prog-step.active .prog-dot{background:var(--saffron);color:#fff}
+.prog-step.done .prog-dot{background:var(--saffron);color:#fff}
+.prog-lbl{font-size:11px;font-weight:500;color:var(--g400);margin-top:5px;text-align:center}
+.prog-step.active .prog-lbl{color:var(--saffron);font-weight:600}
+.onb-main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:28px 20px 80px}
+.onb-card{background:#fff;border:1px solid var(--g100);border-radius:18px;padding:32px;max-width:540px;width:100%}
+.onb-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.3px;margin-bottom:6px}
+.onb-sub{font-size:15px;color:var(--g500);margin-bottom:24px;line-height:1.5}
+.niche-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.niche-opt{border:1.5px solid var(--g200);border-radius:10px;padding:13px 8px;text-align:center;cursor:pointer;transition:all .2s}
+.niche-opt:hover{border-color:var(--saffron);background:var(--saffron-bg)}
+.niche-opt.sel{border-color:var(--saffron);background:var(--saffron-bg)}
+.niche-opt .n-e{font-size:20px;margin-bottom:4px}
+.niche-opt .n-t{font-size:12px;font-weight:600;color:var(--g700)}
+.niche-opt.sel .n-t{color:var(--saffron)}
+.lang-row{display:flex;gap:8px;flex-wrap:wrap}
+.lang-opt{border:1.5px solid var(--g200);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:14px;font-weight:500;color:var(--g700);transition:all .2s}
+.lang-opt:hover{border-color:var(--saffron)}
+.lang-opt.sel{border-color:var(--saffron);background:var(--saffron-bg);color:var(--saffron)}
+.btn-row{display:flex;gap:10px;margin-top:24px}
+.preview-launch{background:var(--navy);border-radius:12px;padding:20px;text-align:center;margin-bottom:18px}
+.pl-name{font-family:'Outfit',sans-serif;font-weight:800;font-size:20px;color:#fff;margin-bottom:4px}
+.pl-url{font-size:12px;color:rgba(255,107,0,.8);margin-bottom:14px}
+.pl-chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.pl-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65);font-size:11px;padding:4px 11px;border-radius:20px}
+
+/* ── GENERATING ── */
+.gen-wrap{text-align:center;padding:16px 0}
+.gen-spinner{width:52px;height:52px;border-radius:50%;border:3px solid var(--g100);border-top-color:var(--saffron);animation:spin .8s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:21px;margin-bottom:6px}
+.gen-sub{font-size:14px;color:var(--g500);margin-bottom:22px}
+.gen-steps-list{text-align:left;background:var(--g50);border-radius:10px;padding:14px}
+.gen-step{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--g100);font-size:14px;color:var(--g700)}
+.gen-step:last-child{border:none}
+.gs-ico{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.gs-wait{background:var(--g200);color:var(--g400)}
+.gs-done{background:var(--green);color:#fff}
+.gs-active{background:var(--saffron-bg);border:1.5px solid var(--saffron)}
+.gs-pulse::after{content:'';display:block;width:6px;height:6px;background:var(--saffron);border-radius:50%;animation:pulse 1s infinite}
+
+/* ── SUCCESS ── */
+.suc-wrap{text-align:center;padding:10px 0}
+.suc-tick{width:60px;height:60px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px}
+.suc-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:24px;margin-bottom:6px}
+.suc-sub{font-size:15px;color:var(--g500);margin-bottom:20px;line-height:1.5}
+.suc-url-box{background:var(--navy);border-radius:10px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:10px}
+.suc-url-txt{font-size:13px;color:rgba(255,107,0,.85);word-break:break-all}
+.suc-acts{display:flex;flex-direction:column;gap:9px}
+
+/* ── DASHBOARD ── */
+.dash-wrap{min-height:100vh;background:var(--g50);display:flex}
+.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s}
+.sb-logo{padding:18px 18px 0;margin-bottom:6px}
+.sb-biz{padding:10px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-biz-n{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-biz-u{font-size:11px;color:rgba(255,107,0,.7);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-nav{flex:1;padding:10px;overflow-y:auto}
+.sb-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.25);padding:7px 8px 3px;margin-top:6px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:1px;background:none;border:none;width:100%;text-align:left;font-family:'Inter',sans-serif}
+.sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-item.active{background:rgba(255,107,0,.15);color:#FF8C3A}
+.sb-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sb-bottom{padding:10px;border-top:1px solid rgba(255,255,255,.07)}
+.view-site-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--saffron);color:#fff;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;width:100%;font-family:'Inter',sans-serif;transition:background .2s}
+.view-site-btn:hover{background:var(--saffron-l)}
+.dash-main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid var(--g100);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.topbar-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.notif-btn{width:34px;height:34px;border-radius:8px;background:var(--g50);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:background .2s}
+.notif-btn:hover{background:var(--g100)}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--saffron);border-radius:50%;border:1.5px solid #fff}
+.av{width:34px;height:34px;background:var(--saffron-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--saffron);cursor:pointer}
+.content{padding:24px;flex:1}
+.panel{display:none}
+.panel.active{display:block}
+
+/* overview */
+.welcome-row{margin-bottom:20px}
+.welcome-row h2{font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;margin-bottom:3px}
+.welcome-row p{font-size:14px;color:var(--g500)}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.stat-c{background:#fff;border:1px solid var(--g100);border-radius:13px;padding:18px}
+.sc-lbl{font-size:13px;color:var(--g500);margin-bottom:7px}
+.sc-val{font-family:'Outfit',sans-serif;font-weight:800;font-size:28px;line-height:1;margin-bottom:3px}
+.sc-delta{font-size:12px;font-weight:500}
+.sc-up{color:var(--green)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px}
+.card-action{font-size:13px;color:var(--saffron);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500}
+.mini-chart{display:flex;align-items:flex-end;gap:5px;height:56px;margin-bottom:7px}
+.bar{background:var(--g100);border-radius:4px 4px 0 0;flex:1;transition:background .2s;cursor:pointer}
+.bar:hover,.bar.hi{background:var(--saffron)}
+.chart-lbs{display:flex;gap:5px}
+.cl{flex:1;font-size:10px;color:var(--g400);text-align:center}
+.act-list{display:flex;flex-direction:column}
+.act-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.act-item:last-child{border:none}
+.act-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.act-t{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-time{font-size:11px;color:var(--g400);margin-top:1px}
+
+/* bookings */
+.bk-list{display:flex;flex-direction:column;gap:9px}
+.bk-card{background:#fff;border:1px solid var(--g100);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px}
+.bk-date{width:42px;height:42px;background:var(--saffron-bg);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.bk-day{font-family:'Outfit',sans-serif;font-weight:800;font-size:17px;color:var(--saffron);line-height:1}
+.bk-mon{font-size:9px;font-weight:700;color:var(--saffron);text-transform:uppercase}
+.bk-info{flex:1;min-width:0}
+.bk-name{font-size:14px;font-weight:600}
+.bk-svc{font-size:12px;color:var(--g500);margin-top:2px}
+.bk-acts{display:flex;gap:6px;flex-shrink:0}
+
+/* edit site */
+.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.svc-row{display:flex;gap:7px;align-items:center;margin-bottom:8px}
+.svc-row .input{flex:1}
+.svc-row .input:last-of-type{max-width:90px}
+.svc-del{background:none;border:none;color:var(--g400);font-size:18px;cursor:pointer;padding:0 3px;flex-shrink:0}
+.svc-del:hover{color:var(--red)}
+.add-svc{background:none;border:1.5px dashed var(--g300);border-radius:8px;padding:8px;width:100%;font-size:13px;color:var(--g500);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.add-svc:hover{border-color:var(--saffron);color:var(--saffron)}
+.save-toast{display:none;background:var(--green);color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;margin-left:10px;align-items:center;gap:5px}
+.save-toast.show{display:inline-flex;animation:fadeUp .25s ease}
+
+/* settings toggles */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--g50)}
+.toggle-row:last-child{border:none}
+.tr-title{font-size:14px;font-weight:500}
+.tr-desc{font-size:12px;color:var(--g500);margin-top:1px}
+.toggle{position:relative;width:38px;height:21px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--g200);border-radius:12px;cursor:pointer;transition:background .2s}
+.slider::before{content:'';position:absolute;height:15px;width:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked+.slider{background:var(--saffron)}
+.toggle input:checked+.slider::before{transform:translateX(17px)}
+
+/* site preview panel */
+.site-preview-frame{border:1px solid var(--g100);border-radius:12px;overflow:hidden;background:#fff}
+.spf-nav{background:linear-gradient(135deg,#3B0764,#7C3AED);padding:0 16px;height:44px;display:flex;align-items:center;justify-content:space-between}
+.spf-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:#fff}
+.spf-body{padding:16px}
+.spf-hero{background:linear-gradient(135deg,#3B0764,#6B21A8);padding:24px 16px;text-align:center;border-radius:10px;margin-bottom:14px}
+.spf-h{font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#fff;margin-bottom:4px}
+.spf-sub{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:14px}
+.spf-btns{display:flex;gap:8px;justify-content:center}
+.spf-wa{background:#25D366;color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.spf-bk{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.spf-svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.spf-svc{border:1px solid var(--g100);border-radius:8px;padding:10px;text-align:center}
+.spf-svc-n{font-size:11px;font-weight:600;margin-bottom:2px}
+.spf-svc-p{font-size:11px;color:#7C3AED;font-weight:700}
+
+/* plan */
+.plan-hero{background:linear-gradient(135deg,var(--navy),#1a2a5e);border-radius:14px;padding:20px;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+.plan-name-big{font-family:'Outfit',sans-serif;font-weight:700;font-size:18px}
+.plan-renewal{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.plan-price-big{font-family:'Outfit',sans-serif;font-weight:800;font-size:24px}
+.plan-price-big sub{font-size:13px;font-weight:400;color:rgba(255,255,255,.5)}
+
+/* MOBILE */
+.mob-menu{display:none;background:none;border:none;color:var(--g700);font-size:22px;cursor:pointer;padding:4px}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .dash-main{margin-left:0}
+  .mob-menu{display:block}
+  .two-col,.edit-grid{grid-template-columns:1fr}
+  .demo-row{flex-direction:column}
+  .price-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* GENERATED SITE */
+.gen-site{min-height:100vh;background:#fff}
+.gs-header{background:linear-gradient(135deg,#3B0764,#6B21A8);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.gs-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:17px;color:#fff}
+.gs-call{color:rgba(255,255,255,.8);font-size:13px;text-decoration:none;background:rgba(255,255,255,.12);padding:7px 14px;border-radius:20px}
+.gs-hero{background:linear-gradient(160deg,#3B0764,#6B21A8,#9333EA);padding:40px 20px 44px;text-align:center}
+.gs-rating{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:12px;padding:4px 12px;border-radius:20px;margin-bottom:14px}
+.gs-h1{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(22px,5vw,32px);color:#fff;margin-bottom:6px;letter-spacing:-.3px}
+.gs-loc{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px}
+.gs-tag{font-size:15px;color:rgba(255,255,255,.8);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.5}
+.gs-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.gs-wa{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:9px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.gs-bk{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.2);border-radius:9px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.gs-hours{margin-top:16px;font-size:12px;color:rgba(255,255,255,.45)}
+.gs-open{background:rgba(37,211,102,.2);color:#4ADE80;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-right:6px}
+.gs-section{padding:28px 20px;max-width:640px;margin:0 auto}
+.gs-sec-t{font-family:'Outfit',sans-serif;font-weight:800;font-size:20px;margin-bottom:4px;letter-spacing:-.3px}
+.gs-sec-s{font-size:13px;color:var(--g500);margin-bottom:16px}
+.gs-svcs{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.gs-svc{border:1px solid var(--g100);border-radius:10px;padding:13px}
+.gs-svc-n{font-size:13px;font-weight:600;margin-bottom:3px}
+.gs-svc-p{font-size:15px;font-weight:800;color:#7C3AED}
+.gs-svc-t{font-size:11px;color:var(--g500);margin-top:2px}
+.gs-about{background:#F5F3FF;border-radius:12px;padding:18px;display:flex;gap:12px}
+.gs-about-t{font-size:14px;color:var(--g700);line-height:1.65}
+.gs-bk-form{background:var(--g50);padding:28px 20px}
+.gs-form-inner{max-width:640px;margin:0 auto}
+.gs-form{background:#fff;border:1px solid var(--g100);border-radius:14px;padding:22px}
+.gs-revs{display:flex;flex-direction:column;gap:10px}
+.gs-rev{background:var(--g50);border-radius:10px;padding:14px}
+.gs-rev-stars{color:#F59E0B;font-size:12px;margin-bottom:7px}
+.gs-rev-t{font-size:14px;color:var(--g700);line-height:1.6;margin-bottom:10px;font-style:italic}
+.gs-rev-auth{display:flex;align-items:center;gap:8px}
+.gs-rev-av{width:28px;height:28px;border-radius:50%;background:#F5F3FF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#7C3AED}
+.gs-map{background:#F5F3FF;border-radius:12px;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-decoration:none;border:1px solid rgba(107,33,168,.1)}
+.gs-footer{background:var(--g900);padding:24px 20px;text-align:center}
+.gs-ft-n{font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;color:#fff;margin-bottom:3px}
+.gs-ft-a{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px}
+.gs-ft-c{font-size:11px;color:rgba(255,255,255,.2);margin-top:12px}
+.gs-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--g100);padding:10px 14px;display:flex;gap:9px;z-index:90;box-shadow:0 -3px 16px rgba(0,0,0,.07)}
+.gs-sticky-wa{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;padding:11px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.gs-sticky-bk{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#7C3AED;color:#fff;border:none;padding:11px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.sb-credit{position:fixed;bottom:60px;left:14px;background:rgba(10,15,30,.88);backdrop-filter:blur(8px);border:1px solid rgba(255,107,0,.25);border-radius:20px;padding:5px 12px 5px 8px;display:flex;align-items:center;gap:5px;text-decoration:none;font-size:11px;z-index:95}
+.sb-credit-dot{width:5px;height:5px;background:var(--saffron);border-radius:50%}
+.sb-credit-txt{color:rgba(255,255,255,.5)}
+.sb-credit-brand{font-family:'Outfit',sans-serif;font-weight:700;color:#fff}
+.sb-credit-brand span{color:var(--saffron)}
+
+/* AI content display */
+.ai-content{white-space:pre-wrap;font-size:14px;color:var(--g700);line-height:1.65}
+.ai-loading{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--g500)}
+.ai-dot{width:6px;height:6px;background:var(--saffron);border-radius:50%;animation:bounce .8s ease infinite}
+.ai-dot:nth-child(2){animation-delay:.15s}
+.ai-dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* footer */
+footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.05);padding:32px 24px}
+.footer-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.f-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:19px;color:#fff}
+.f-logo span{color:var(--saffron)}
+.f-links{display:flex;gap:20px}
+.f-link{font-size:13px;color:rgba(255,255,255,.38);text-decoration:none;cursor:pointer}
+.f-link:hover{color:rgba(255,255,255,.7)}
+.f-copy{font-size:11px;color:rgba(255,255,255,.2);width:100%;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+
+/* ─────────────── STORAGE (replaces Supabase for demo) ─────────────── */
+const DB={
+  save:(k,v)=>localStorage.setItem('sb_'+k,JSON.stringify(v)),
+  load:(k,def)=>{try{const r=localStorage.getItem('sb_'+k);return r?JSON.parse(r):def}catch{return def}},
+  del:(k)=>localStorage.removeItem('sb_'+k)
+};
+
+/* ─────────────── TOAST ─────────────── */
+let _toastSet=null;
+function Toast({toasts}){
+  return <div className="toast-wrap">{toasts.map(t=><div key={t.id} className={`toast ${t.type||''}`}>{t.icon} {t.msg}</div>)}</div>;
+}
+function useToast(){
+  const [toasts,setToasts]=useState([]);
+  _toastSet=setToasts;
+  const add=useCallback((msg,type='',icon='')=>{
+    const id=Date.now();
+    setToasts(p=>[...p,{id,msg,type,icon}]);
+    setTimeout(()=>setToasts(p=>p.filter(t=>t.id!==id)),3000);
+  },[]);
+  return{toasts,add};
+}
+function toast(msg,type='',icon=''){if(_toastSet){const id=Date.now();_toastSet(p=>[...p,{id,msg,type,icon}]);setTimeout(()=>_toastSet(p=>p.filter(t=>t.id!==id)),3000);}}
+
+/* ─────────────── CLAUDE API ─────────────── */
+async function callClaude(system,user,maxTokens=800){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:maxTokens,
+      system,
+      messages:[{role:'user',content:user}]
+    })
+  });
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.error?.message||'API error');
+  return d.content[0].text;
+}
+
+async function generateSiteContent(biz){
+  const sys=`You are an AI that generates professional website content for Indian small businesses.
+Return ONLY valid JSON, no markdown, no explanation. Follow this exact schema:
+{
+  "headline": "short punchy headline (max 8 words)",
+  "tagline": "one compelling sentence about the business",
+  "about": "2-3 sentences about the business, warm and professional",
+  "services": [{"name":"service name","price":"₹XXX","duration":"XX mins"}],
+  "reviews": [{"name":"Indian name","initials":"XX","text":"review text","stars":5}],
+  "hours": "opening hours string",
+  "seo_title": "SEO page title",
+  "seo_desc": "meta description under 155 chars",
+  "whatsapp_greeting": "pre-filled WhatsApp message from customer"
+}
+Generate exactly 6 services and 3 reviews. Make everything authentic for the business type.`;
+  const u=`Business name: ${biz.name}
+Type: ${biz.type}
+City: ${biz.city}
+Area: ${biz.area||biz.city}
+Language: ${biz.lang}
+Tagline hint: ${biz.tagline}`;
+  const raw=await callClaude(sys,u,1000);
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+/* ─────────────── SLUG ─────────────── */
+function slug(t){return t.toLowerCase().trim().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'-').slice(0,50)}
+
+/* ─────────────── MAIN APP ─────────────── */
+export default function App(){
+  const [page,setPage]=useState('landing');
+  const [user,setUser]=useState(()=>DB.load('user',null));
+  const [bizData,setBizData]=useState(()=>DB.load('bizdata',null));
+  const [showAuth,setShowAuth]=useState(false);
+  const [authMode,setAuthMode]=useState('signup');
+  const {toasts,add:addToast}=useToast();
+
+  useEffect(()=>{
+    if(bizData&&user&&page==='landing'){}
+  },[]);
+
+  function login(u){
+    setUser(u);DB.save('user',u);
+    setShowAuth(false);
+    toast('Welcome back, '+u.name+'! 👋','success','');
+  }
+  function signup(u){
+    setUser(u);DB.save('user',u);
+    setShowAuth(false);
+    setPage('onboarding');
+  }
+  function logout(){
+    setUser(null);DB.del('user');
+    setBizData(null);DB.del('bizdata');
+    setPage('landing');
+    toast('Logged out successfully','','');
+  }
+  function onBizCreated(data){
+    setBizData(data);DB.save('bizdata',data);
+    setPage('dashboard');
+  }
+
+  return(
+    <div>
+      <Toast toasts={toasts}/>
+      {showAuth&&<AuthModal mode={authMode} setMode={setAuthMode} onLogin={login} onSignup={signup} onClose={()=>setShowAuth(false)}/>}
+      {page==='landing'&&<Landing user={user} onGetStarted={()=>{if(user){setPage('onboarding')}else{setAuthMode('signup');setShowAuth(true)}}} onLogin={()=>{setAuthMode('login');setShowAuth(true)}} onDashboard={()=>setPage('dashboard')} hasBiz={!!bizData}/>}
+      {page==='onboarding'&&<Onboarding user={user} onComplete={onBizCreated} onBack={()=>setPage('landing')}/>}
+      {page==='dashboard'&&<Dashboard user={user} biz={bizData} onLogout={logout} onViewSite={()=>setPage('site')} onBack={()=>setPage('landing')} onUpdateBiz={d=>{setBizData(d);DB.save('bizdata',d);}}/>}
+      {page==='site'&&bizData&&<GeneratedSite biz={bizData} onBack={()=>setPage('dashboard')}/>}
+    </div>
+  );
+}
+
+/* ─────────────── AUTH MODAL ─────────────── */
+function AuthModal({mode,setMode,onLogin,onSignup,onClose}){
+  const [name,setName]=useState('');
+  const [email,setEmail]=useState('');
+  const [pass,setPass]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState('');
+
+  async function submit(){
+    setErr('');
+    if(!email||!pass){setErr('Please fill in all fields');return;}
+    if(mode==='signup'&&!name){setErr('Please enter your name');return;}
+    if(pass.length<6){setErr('Password must be at least 6 characters');return;}
+    setLoading(true);
+    await new Promise(r=>setTimeout(r,700));
+    const users=DB.load('users',{});
+    if(mode==='signup'){
+      if(users[email]){setErr('Account already exists. Please log in.');setLoading(false);return;}
+      const u={name,email,id:Date.now().toString()};
+      users[email]={...u,pass};
+      DB.save('users',users);
+      onSignup(u);
+    } else {
+      const u=users[email];
+      if(!u||u.pass!==pass){setErr('Invalid email or password');setLoading(false);return;}
+      onLogin({name:u.name,email:u.email,id:u.id});
+    }
+    setLoading(false);
+  }
+
+  return(
+    <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose()}}>
+      <div className="modal">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'20px'}}>
+          <div>
+            <div className="modal-title">{mode==='signup'?'Create your account':'Welcome back'}</div>
+            <div className="modal-sub">{mode==='signup'?'Start building your website for free':'Log in to your Sitebana account'}</div>
+          </div>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'var(--g400)',lineHeight:1}}>×</button>
+        </div>
+        {err&&<div style={{background:'var(--red-bg)',color:'var(--red)',padding:'10px 14px',borderRadius:'8px',fontSize:'13px',marginBottom:'14px'}}>⚠️ {err}</div>}
+        {mode==='signup'&&<div className="field"><label className="label">Your name</label><input className="input" value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Priya Sharma"/></div>}
+        <div className="field"><label className="label">Email address</label><input className="input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@email.com"/></div>
+        <div className="field"><label className="label">Password</label><input className="input" type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="min. 6 characters" onKeyDown={e=>e.key==='Enter'&&submit()}/></div>
+        <button className="btn btn-primary" style={{width:'100%',marginTop:'4px'}} onClick={submit} disabled={loading}>
+          {loading?<><span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/></>:mode==='signup'?'Create account & build my site →':'Log in →'}
+        </button>
+        <div className="auth-switch">{mode==='signup'?<>Already have an account? <button onClick={()=>setMode('login')}>Log in</button></>:<>New here? <button onClick={()=>setMode('signup')}>Create free account</button></>}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────── LANDING ─────────────── */
+function Landing({user,onGetStarted,onLogin,onDashboard,hasBiz}){
+  const [demoVal,setDemoVal]=useState('');
+
+  return(
+    <div>
+      {/* NAV */}
+      <nav className="nav">
+        <div className="nav-inner">
+          <div className="logo">site<span>bana</span></div>
+          <div className="nav-right">
+            <button className="nav-link" onClick={()=>document.getElementById('how')?.scrollIntoView({behavior:'smooth'})}>How it works</button>
+            <button className="nav-link" onClick={()=>document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})}>Pricing</button>
+            {user?<>
+              {hasBiz&&<button className="btn btn-ghost btn-sm" onClick={onDashboard}>Dashboard</button>}
+              <button className="btn btn-primary btn-sm" onClick={onGetStarted}>{hasBiz?'My site':'Build my site'}</button>
+            </>:<>
+              <button className="nav-link" onClick={onLogin}>Log in</button>
+              <button className="btn btn-primary btn-sm" onClick={onGetStarted}>Get started free</button>
+            </>}
+          </div>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-badge"><span className="badge-dot"/>&nbsp;63 million Indian businesses. Less than 5% online.</div>
+        <h1>Your shop online<br/>in <span className="acc">60 seconds</span></h1>
+        <p className="hero-sub">Type your business name. AI builds your full website instantly. Share the link with customers today — no coding, no designer, no hassle.</p>
+        <div className="demo-box">
+          <div className="demo-lbl">Try it — type your shop name</div>
+          <div className="demo-row">
+            <input className="demo-in" value={demoVal} onChange={e=>setDemoVal(e.target.value)} placeholder="e.g. Sharma Beauty Salon" onKeyDown={e=>e.key==='Enter'&&onGetStarted()}/>
+            <button className="btn btn-primary" onClick={onGetStarted}>Build my site →</button>
+          </div>
+          {demoVal.length>2&&<div className="demo-preview show">
+            <div className="dp-url">sitebana.vercel.app/{slug(demoVal)}</div>
+            <div className="dp-title">{demoVal}</div>
+            <div className="dp-ok">Professional website ready in 60 seconds ✓</div>
+          </div>}
+        </div>
+        <div className="hero-stats">
+          {[['60','sec','To go live'],['₹0','','To start'],['63M','+','Businesses need this'],['0','','Coding needed']].map(([n,b,l],i)=>(
+            <div key={i} style={{textAlign:'center'}}>
+              <div className="hs-num">{n}<b>{b}</b></div>
+              <div className="hs-lbl">{l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="section" id="how" style={{background:'var(--g50)'}}>
+        <div className="wrap">
+          <div className="eyebrow">How it works</div>
+          <h2 className="sec-h">Four steps to your website</h2>
+          <p className="sec-sub">No forms to fill. No designers to hire. No waiting.</p>
+          <div className="steps-grid">
+            {[['🏪','Type your business name','Tell us your shop name, what you do, and your city. That\'s all.','30 seconds'],
+              ['⚡','AI builds your site','AI writes your content, picks your design, and builds a complete website.','60 seconds'],
+              ['🚀','Share with customers','Your site is live. Share on WhatsApp, Instagram, Google.','Instant'],
+              ['✏️','Edit anytime','Add photos, update prices, change hours — from your phone.','Always free']
+            ].map(([e,t,d,tag],i)=>(
+              <div key={i} className="step-card">
+                <div className="step-n">0{i+1}</div>
+                <div className="step-e">{e}</div>
+                <div className="step-t">{t}</div>
+                <div className="step-d">{d}</div>
+                <div className="step-tag">{tag}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section className="section">
+        <div className="wrap">
+          <div className="eyebrow">What's included</div>
+          <h2 className="sec-h">Everything your business needs</h2>
+          <p className="sec-sub">Every Sitebana website comes loaded with features that bring customers in.</p>
+          <div className="feat-grid">
+            {[['💬','WhatsApp button','One tap and customers chat with you directly. Pre-filled message so they don\'t have to type anything.'],
+              ['📅','Appointment booking','Customers book appointments from your site. You get notified on WhatsApp instantly.'],
+              ['📍','Google Maps built-in','Your location is auto-added. Customers can find your shop and get directions in one tap.'],
+              ['🔍','Google-ready SEO','Set up so Google can find it. Customers searching "salon near me" can discover you.'],
+              ['📱','Works on every phone','Looks perfect on any device — phone, tablet, computer. No extra work.'],
+              ['🌐','Hindi + English','Your site can be in Hindi, English, or both. Reach every customer.']
+            ].map(([ico,t,d],i)=>(
+              <div key={i} className="feat-card">
+                <div className="feat-ico">{ico}</div>
+                <div className="feat-t">{t}</div>
+                <div className="feat-d">{d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NICHES */}
+      <section className="section dark-sec">
+        <div className="wrap">
+          <div className="eyebrow">Who uses Sitebana</div>
+          <h2 className="sec-h">Built for every kind of business</h2>
+          <p className="sec-sub">From a single-chair salon to a coaching centre.</p>
+          <div className="niche-grid">
+            {[['💇','Salons'],['📚','Tutors'],['🍽️','Restaurants'],['🏥','Clinics'],['👗','Boutiques'],['🔧','Plumbers'],['📸','Photographers'],['🍰','Home bakers']].map(([e,n])=>(
+              <div key={n} className="niche-card" onClick={onGetStarted}><div className="niche-e">{e}</div><div className="niche-n">{n}</div></div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SITE PREVIEW */}
+      <section className="section">
+        <div className="wrap">
+          <div className="eyebrow">See what you get</div>
+          <h2 className="sec-h">This is what your site looks like</h2>
+          <p className="sec-sub">A real, professional website — not a basic profile page.</p>
+          <div className="browser">
+            <div className="brow-bar">
+              <div className="b-dots"><div className="b-dot" style={{background:'#FF5F57'}}/><div className="b-dot" style={{background:'#FFBD2E'}}/><div className="b-dot" style={{background:'#28CA41'}}/></div>
+              <div className="b-url">sitebana.vercel.app/glamour-beauty-salon-bengaluru</div>
+            </div>
+            <div style={{background:'linear-gradient(135deg,#3B0764,#6B21A8)',padding:'28px 20px',textAlign:'center'}}>
+              <h3 style={{fontFamily:'Outfit',fontWeight:800,fontSize:'22px',color:'#fff',marginBottom:'6px'}}>✂️ Glamour Beauty Salon</h3>
+              <p style={{fontSize:'13px',color:'rgba(255,255,255,.55)',marginBottom:'16px'}}>Koramangala, Bengaluru · Open 9am–8pm · ⭐ 4.8</p>
+              <div style={{display:'flex',gap:'8px',justifyContent:'center'}}>
+                <button className="gs-wa">💬 WhatsApp us</button>
+                <button className="gs-bk">📅 Book now</button>
+              </div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'10px',padding:'18px'}}>
+              {[['Hair cut','₹299'],['Facial','₹599'],['Bridal','₹2,999'],['Blowdry','₹399'],['Manicure','₹249'],['Colour','₹999']].map(([n,p])=>(
+                <div key={n} style={{border:'1px solid var(--g100)',borderRadius:'8px',padding:'11px',textAlign:'center'}}>
+                  <div style={{fontSize:'13px',fontWeight:600,marginBottom:'2px'}}>{n}</div>
+                  <div style={{fontSize:'13px',fontWeight:800,color:'#7C3AED'}}>{p}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="section" style={{background:'var(--g50)'}}>
+        <div className="wrap">
+          <div className="eyebrow">What people say</div>
+          <h2 className="sec-h">Real businesses. Real results.</h2>
+          <div className="testi-grid">
+            {[['PR','Priya Reddy','Priya Beauty, Bengaluru','"Mujhe lagta tha website banana bahut expensive hoga. Sitebana ne 2 minute mein bana diya. Ab mere customers Google par dhundh ke aate hain."'],
+              ['AS','Arun Sharma','Sharma Coaching, Hyderabad','"My coaching centre now gets 5–6 new enquiries every week from the website. I used to rely only on word of mouth. This changed everything."'],
+              ['MK','Mohammed Khan','MK Tailor, Chennai','"The WhatsApp button alone was worth it. Customers tap and message me directly. My bookings went up 40% in the first month."']
+            ].map(([av,n,b,t])=>(
+              <div key={n} className="testi">
+                <div className="t-stars">★★★★★</div>
+                <p className="t-text">{t}</p>
+                <div className="t-auth"><div className="t-av">{av}</div><div><div className="t-name">{n}</div><div className="t-biz">{b}</div></div></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section className="section" id="pricing">
+        <div className="wrap">
+          <div className="eyebrow">Pricing</div>
+          <h2 className="sec-h">Start free. Pay only when you're happy.</h2>
+          <p className="sec-sub">30-day free trial. No credit card needed. Cancel anytime.</p>
+          <div className="price-grid">
+            {[
+              {name:'Starter',price:'₹299',desc:'Perfect for getting your first website live.',feats:['1-page website','Free subdomain','WhatsApp button','Google Maps','Mobile ready'],primary:false},
+              {name:'Pro',price:'₹599',desc:'For businesses serious about growing online.',feats:['5-page website','Custom domain','Appointment booking','WhatsApp + Maps + SEO','Analytics dashboard','Hindi + English'],primary:true},
+              {name:'Business',price:'₹999',desc:'For established businesses wanting every edge.',feats:['Unlimited pages','SEO boost','WhatsApp catalog','Priority support','Multiple staff logins','Custom branding'],primary:false}
+            ].map(p=>(
+              <div key={p.name} className={`pc${p.primary?' pop':''}`}>
+                {p.primary&&<div className="pop-tag">Most popular</div>}
+                <div className="pc-name">{p.name}</div>
+                <div className="pc-price">{p.price}<sub>/month</sub></div>
+                <div className="pc-desc">{p.desc}</div>
+                <ul className="pc-feats">{p.feats.map(f=><li key={f}><span className="ck">✓</span>{f}</li>)}</ul>
+                <button className={`btn btn-sm ${p.primary?'btn-primary':'btn-outline'}`} style={{width:'100%'}} onClick={onGetStarted}>Start free trial</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section style={{background:'var(--navy)',textAlign:'center',padding:'90px 24px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 50% 80% at 50% 50%,rgba(255,107,0,.09) 0%,transparent 70%)'}}/>
+        <div style={{position:'relative'}}>
+          <h2 className="sec-h outfit" style={{color:'#fff',maxWidth:'660px',margin:'0 auto 12px'}}>Your business deserves to be found online</h2>
+          <p className="sec-sub" style={{color:'rgba(255,255,255,.45)',margin:'0 auto 36px'}}>Join thousands of Indian business owners who got their website in under 60 seconds.</p>
+          <button className="btn btn-primary btn-lg" onClick={onGetStarted}>Build my site — it's free →</button>
+          <p style={{marginTop:'12px',fontSize:'13px',color:'rgba(255,255,255,.3)'}}>No credit card. No coding. Cancel anytime.</p>
+        </div>
+      </section>
+
+      <footer>
+        <div className="footer-in">
+          <div className="f-logo">site<span>bana</span></div>
+          <div className="f-links">
+            <span className="f-link">Privacy</span>
+            <span className="f-link">Terms</span>
+            <span className="f-link">Contact</span>
+          </div>
+        </div>
+        <p className="f-copy">© 2025 Sitebana · Made with ❤️ in India</p>
+      </footer>
+    </div>
+  );
+}
+
+/* ─────────────── ONBOARDING ─────────────── */
+function Onboarding({user,onComplete,onBack}){
+  const [step,setStep]=useState(1);
+  const [bizName,setBizName]=useState('');
+  const [bizType,setBizType]=useState('');
+  const [city,setCity]=useState('');
+  const [area,setArea]=useState('');
+  const [phone,setPhone]=useState('');
+  const [tagline,setTagline]=useState('');
+  const [lang,setLang]=useState('English');
+  const [email,setEmail]=useState(user?.email||'');
+  const [generating,setGenerating]=useState(false);
+  const [genStep,setGenStep]=useState(0);
+  const [done,setDone]=useState(false);
+  const [siteSlug,setSiteSlug]=useState('');
+  const [siteContent,setSiteContent]=useState(null);
+
+  const niches=[['💇','Salon'],['🍽️','Restaurant'],['📚','Tutor'],['🏥','Clinic'],['👗','Boutique'],['📸','Photographer'],['🍰','Home Baker'],['🔧','Plumber'],['🏪','Other']];
+  const genSteps=['Writing your business description…','Picking the best design template…','Setting up WhatsApp & booking…','Adding Google Maps & SEO…','Publishing your site live…'];
+
+  async function launch(){
+    setStep('gen');setGenerating(true);
+    const biz={name:bizName,type:bizType,city,area,phone,tagline,lang,email};
+    const s=slug(bizName+'-'+city);setSiteSlug(s);
+    for(let i=0;i<genSteps.length;i++){
+      setGenStep(i);
+      if(i===1){
+        try{
+          const content=await generateSiteContent(biz);
+          setSiteContent(content);
+        }catch(e){
+          // fallback content
+          setSiteContent({
+            headline:`Welcome to ${bizName}`,
+            tagline:tagline||`Trusted ${bizType} in ${city}`,
+            about:`${bizName} is a leading ${bizType.toLowerCase()} in ${area||city}. We are committed to providing excellent service to all our customers.`,
+            services:[{name:'Service 1',price:'₹499',duration:'45 mins'},{name:'Service 2',price:'₹799',duration:'60 mins'},{name:'Service 3',price:'₹999',duration:'90 mins'},{name:'Service 4',price:'₹299',duration:'30 mins'},{name:'Service 5',price:'₹1499',duration:'2 hours'},{name:'Service 6',price:'₹199',duration:'20 mins'}],
+            reviews:[{name:'Rajesh Kumar',initials:'RK',text:'Excellent service! Very professional and friendly staff.',stars:5},{name:'Priya Sharma',initials:'PS',text:'Best in the area. Highly recommend to everyone.',stars:5},{name:'Anita Reddy',initials:'AR',text:'Very happy with the results. Will definitely come back.',stars:5}],
+            hours:'Mon–Sat: 9am–8pm, Sun: 10am–6pm',
+            seo_title:`${bizName} — ${bizType} in ${city}`,
+            seo_desc:`${bizName} is a top-rated ${bizType.toLowerCase()} in ${city}. Book appointments online.`,
+            whatsapp_greeting:`Hi, I'd like to book an appointment at ${bizName}.`
+          });
+        }
+      }
+      await new Promise(r=>setTimeout(r,900));
+    }
+    setGenerating(false);setDone(true);
+    const fullBiz={name:bizName,type:bizType,city,area,phone,tagline,lang,email,slug:s,content:siteContent||{},created:new Date().toISOString(),plan:'Pro Trial',views:0,bookings:[],whatsappTaps:0};
+    // We'll pass final content after state updates
+    setTimeout(()=>{
+      const finalContent=DB.load('_tmpContent',null)||{};
+      onComplete({...fullBiz,content:finalContent.c||fullBiz.content});
+    },100);
+  }
+  useEffect(()=>{if(siteContent)DB.save('_tmpContent',{c:siteContent});},[siteContent]);
+
+  function copyUrl(){navigator.clipboard.writeText('sitebana.vercel.app/'+siteSlug).then(()=>toast('Link copied!','success','📋'));}
+  function shareWA(){const msg=encodeURIComponent(`My business is now online! 🎉\n\nVisit: https://sitebana.vercel.app/${siteSlug}`);window.open('https://wa.me/?text='+msg,'_blank');}
+
+  const progState=(s)=>{if(typeof step==='string'){return s<=3?'done':'';} return s<step?'done':s===step?'active':''};
+
+  return(
+    <div className="onb-wrap">
+      <div className="onb-top">
+        <div className="logo">site<span>bana</span></div>
+        <button className="btn btn-ghost btn-sm" style={{color:'rgba(255,255,255,.5)'}} onClick={onBack}>← Back</button>
+      </div>
+      {step!=='gen'&&!done&&<div className="progress-row">
+        <div className="progress-inner">
+          <div className="prog-steps">
+            {[['1','Your business'],['2','Details'],['3','Launch']].map(([n,l],i)=>(
+              <div key={n} className={`prog-step ${progState(i+1)}`}>
+                <div className="prog-dot">{progState(i+1)==='done'?'✓':n}</div>
+                <div className="prog-lbl">{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>}
+      <div className="onb-main">
+        <div className="onb-card">
+
+          {/* STEP 1 */}
+          {step===1&&<>
+            <div className="onb-title">What's your business? 🏪</div>
+            <div className="onb-sub">We'll use this to build your site. Takes 30 seconds.</div>
+            <div className="field" style={{marginBottom:'18px'}}>
+              <label className="label">Business name <span style={{color:'var(--saffron)'}}>*</span></label>
+              <input className="input" value={bizName} onChange={e=>setBizName(e.target.value)} placeholder="e.g. Sharma Beauty Salon" maxLength={60}/>
+            </div>
+            <div className="field" style={{marginBottom:'18px'}}>
+              <label className="label">What type of business? <span style={{color:'var(--saffron)'}}>*</span></label>
+              <div className="niche-pick">
+                {niches.map(([e,t])=>(
+                  <div key={t} className={`niche-opt${bizType===t?' sel':''}`} onClick={()=>setBizType(t)}>
+                    <div className="n-e">{e}</div><div className="n-t">{t}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="btn-row">
+              <button className="btn btn-primary" style={{flex:1}} disabled={!bizName.trim()||!bizType} onClick={()=>setStep(2)}>Continue →</button>
+            </div>
+          </>}
+
+          {/* STEP 2 */}
+          {step===2&&<>
+            <div className="onb-title">A few more details ✏️</div>
+            <div className="onb-sub">This goes on your website so customers can find you.</div>
+            <div className="field" style={{marginBottom:'14px'}}><label className="label">City <span style={{color:'var(--saffron)'}}>*</span></label><input className="input" value={city} onChange={e=>setCity(e.target.value)} placeholder="e.g. Bengaluru"/></div>
+            <div className="field" style={{marginBottom:'14px'}}><label className="label">Area / Neighbourhood</label><input className="input" value={area} onChange={e=>setArea(e.target.value)} placeholder="e.g. Koramangala"/></div>
+            <div className="field" style={{marginBottom:'14px'}}><label className="label">WhatsApp number <span style={{color:'var(--saffron)'}}>*</span></label><input className="input" type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="98765 43210"/></div>
+            <div className="field" style={{marginBottom:'14px'}}><label className="label">Your tagline <span style={{color:'var(--saffron)'}}>*</span></label><input className="input" value={tagline} onChange={e=>setTagline(e.target.value)} placeholder="e.g. Bengaluru's most trusted beauty salon" maxLength={80}/></div>
+            <div className="field" style={{marginBottom:'14px'}}>
+              <label className="label">Language</label>
+              <div className="lang-row">
+                {['English','Hindi','Both'].map(l=><div key={l} className={`lang-opt${lang===l?' sel':''}`} onClick={()=>setLang(l)}>{l}</div>)}
+              </div>
+            </div>
+            <div className="btn-row">
+              <button className="btn btn-outline" onClick={()=>setStep(1)}>← Back</button>
+              <button className="btn btn-primary" style={{flex:1}} disabled={!city.trim()||!phone.trim()||!tagline.trim()} onClick={()=>setStep(3)}>Continue →</button>
+            </div>
+          </>}
+
+          {/* STEP 3 */}
+          {step===3&&<>
+            <div className="onb-title">Ready to launch! 🚀</div>
+            <div className="onb-sub">Review your details and build your website.</div>
+            <div className="preview-launch">
+              <div className="pl-name">{bizName}</div>
+              <div className="pl-url">sitebana.vercel.app/{slug(bizName+'-'+city)}</div>
+              <div className="pl-chips">
+                {['💬 WhatsApp','📅 Booking','📍 Maps','🔍 SEO','📱 Mobile'].map(c=><div key={c} className="pl-chip">{c}</div>)}
+              </div>
+            </div>
+            <div className="field" style={{marginBottom:'14px'}}><label className="label">Email (to manage your site)</label><input className="input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com"/></div>
+            <div className="btn-row">
+              <button className="btn btn-outline" onClick={()=>setStep(2)}>← Back</button>
+              <button className="btn btn-primary" style={{flex:1}} onClick={launch}>⚡ Build my site now</button>
+            </div>
+          </>}
+
+          {/* GENERATING */}
+          {step==='gen'&&generating&&<div className="gen-wrap">
+            <div className="gen-spinner"/>
+            <div className="gen-title">Building your website…</div>
+            <div className="gen-sub">{genSteps[genStep]}</div>
+            <div className="gen-steps-list">
+              {genSteps.map((s,i)=>(
+                <div key={i} className="gen-step">
+                  <div className={`gs-ico ${i<genStep?'gs-done':i===genStep?'gs-active gs-pulse':'gs-wait'}`}>{i<genStep?'✓':i+1}</div>
+                  {s}
+                </div>
+              ))}
+            </div>
+          </div>}
+
+          {/* SUCCESS */}
+          {done&&<div className="suc-wrap">
+            <div className="suc-tick">🎉</div>
+            <div className="suc-title">Your site is live!</div>
+            <div className="suc-sub">Share this link with your customers right now. They can find you, see your services, and contact you directly.</div>
+            <div className="suc-url-box">
+              <div className="suc-url-txt">sitebana.vercel.app/{siteSlug}</div>
+              <button className="btn btn-sm btn-primary" onClick={copyUrl}>Copy</button>
+            </div>
+            <div className="suc-acts">
+              <button className="btn" style={{background:'#25D366',color:'#fff',padding:'13px'}} onClick={shareWA}>💬 Share on WhatsApp</button>
+              <button className="btn btn-primary" style={{padding:'13px'}} onClick={()=>onComplete&&null}>Go to dashboard →</button>
+            </div>
+          </div>}
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────── DASHBOARD ─────────────── */
+function Dashboard({user,biz,onLogout,onViewSite,onBack,onUpdateBiz}){
+  const [panel,setPanel]=useState('overview');
+  const [sideOpen,setSideOpen]=useState(false);
+  const [showSaveToast,setShowSaveToast]=useState(false);
+  const [editBiz,setEditBiz]=useState(biz?{...biz}:null);
+  const [svcs,setSvcs]=useState(()=>biz?.content?.services||[{name:'',price:''}]);
+  const [bookings,setBookings]=useState(()=>DB.load('bookings',[
+    {id:1,name:'Priya Reddy',svc:'Hair cut',day:'12',mon:'JUN',status:'pending',phone:'98765 43210'},
+    {id:2,name:'Sunita Mehta',svc:'Facial',day:'12',mon:'JUN',status:'confirmed',phone:'87654 32109'},
+    {id:3,name:'Kavitha S.',svc:'Bridal package',day:'14',mon:'JUN',status:'confirmed',phone:'76543 21098'},
+    {id:4,name:'Asha Rao',svc:'Manicure',day:'15',mon:'JUN',status:'pending',phone:'65432 10987'},
+    {id:5,name:'Deepika N.',svc:'Hair colour',day:'16',mon:'JUN',status:'confirmed',phone:'54321 09876'},
+  ]));
+  const [bkFilter,setBkFilter]=useState('all');
+  const [aiChat,setAiChat]=useState('');
+  const [aiReply,setAiReply]=useState('');
+  const [aiLoading,setAiLoading]=useState(false);
+  const [featureToggles,setFeatureToggles]=useState({whatsapp:true,booking:true,maps:true,reviews:false,hindi:false,wa_alerts:true,weekly_report:true});
+
+  const chartData=[28,35,42,31,55,47,60];
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const maxBar=Math.max(...chartData);
+
+  function nav(p){setPanel(p);setSideOpen(false);}
+
+  function confirmBk(id){
+    const updated=bookings.map(b=>b.id===id?{...b,status:'confirmed'}:b);
+    setBookings(updated);DB.save('bookings',updated);
+    toast('Booking confirmed ✓','success','');
+  }
+  function declineBk(id){
+    const updated=bookings.filter(b=>b.id!==id);
+    setBookings(updated);DB.save('bookings',updated);
+    toast('Booking removed','','');
+  }
+
+  function saveEdits(){
+    const updated={...biz,name:editBiz.name,tagline:editBiz.tagline,area:editBiz.area,phone:editBiz.phone,content:{...biz.content,services:svcs}};
+    onUpdateBiz(updated);
+    setShowSaveToast(true);
+    setTimeout(()=>setShowSaveToast(false),2500);
+    toast('Changes saved & live ✓','success','');
+  }
+
+  async function askAI(){
+    if(!aiChat.trim())return;
+    setAiLoading(true);setAiReply('');
+    try{
+      const reply=await callClaude(
+        `You are a helpful business advisor for Indian small businesses. Give concise, practical advice in 2-3 short paragraphs. Be specific and actionable. The user owns: ${biz?.name} (${biz?.type}) in ${biz?.city}.`,
+        aiChat
+      );
+      setAiReply(reply);
+    }catch(e){setAiReply('Sorry, I could not connect. Please check your API key in the code.');}
+    setAiLoading(false);
+  }
+
+  if(!biz)return<div style={{padding:'40px',textAlign:'center'}}><p>No business found. <button className="btn btn-primary btn-sm" onClick={onBack}>Go back</button></p></div>;
+
+  const initials=(biz.name||'').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+  return(
+    <div className="dash-wrap">
+      {/* SIDEBAR */}
+      <aside className={`sidebar${sideOpen?' open':''}`}>
+        <div className="sb-logo"><div className="logo" style={{fontSize:'19px'}}>site<span>bana</span></div></div>
+        <div className="sb-biz">
+          <div className="sb-biz-n">{biz.name}</div>
+          <div className="sb-biz-u">sitebana.vercel.app/{biz.slug}</div>
+        </div>
+        <div className="sb-nav">
+          <div className="sb-sec">Main</div>
+          {[['overview','📊','Overview'],['bookings','📅','Bookings'],['edit','✏️','Edit site'],['ai','🤖','AI advisor'],['settings','⚙️','Settings'],['plan','⭐','Your plan']].map(([p,ico,lbl])=>(
+            <button key={p} className={`sb-item${panel===p?' active':''}`} onClick={()=>nav(p)}><span className="sb-ico">{ico}</span>{lbl}</button>
+          ))}
+        </div>
+        <div className="sb-bottom" style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+          <button className="view-site-btn" onClick={onViewSite}>🔗 View my site</button>
+          <button className="btn btn-ghost btn-sm" style={{color:'rgba(255,255,255,.4)',justifyContent:'center'}} onClick={onLogout}>Log out</button>
+        </div>
+      </aside>
+
+      {/* MAIN */}
+      <div className="dash-main">
+        <div className="topbar">
+          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+            <button className="mob-menu" onClick={()=>setSideOpen(!sideOpen)}>☰</button>
+            <div className="topbar-title">{{overview:'Overview',bookings:'Bookings',edit:'Edit site',ai:'AI advisor',settings:'Settings',plan:'Your plan'}[panel]}</div>
+          </div>
+          <div className="topbar-right">
+            <div className="notif-btn">🔔<div className="notif-dot"/></div>
+            <div className="av">{initials}</div>
+          </div>
+        </div>
+
+        <div className="content">
+
+          {/* OVERVIEW */}
+          <div className={`panel${panel==='overview'?' active':''}`}>
+            <div className="welcome-row">
+              <h2>Good morning, {biz.name.split(' ')[0]}! 👋</h2>
+              <p>Here's how your site is performing</p>
+            </div>
+            <div className="stats-row">
+              {[['👁️ Views today','47','var(--blue)','↑ 12 from yesterday'],['💬 WhatsApp taps','9','var(--green)','↑ 3 from yesterday'],['📅 Bookings','4','var(--saffron)','↑ 1 from yesterday'],['🔍 Google clicks','18','#7C3AED','↑ 5 this week']].map(([l,v,c,d])=>(
+                <div key={l} className="stat-c">
+                  <div className="sc-lbl">{l}</div>
+                  <div className="sc-val" style={{color:c}}>{v}</div>
+                  <div className="sc-delta sc-up">{d}</div>
+                </div>
+              ))}
+            </div>
+            <div className="two-col">
+              <div className="card">
+                <div className="card-head"><div className="card-title">Views — last 7 days</div></div>
+                <div className="mini-chart">
+                  {chartData.map((v,i)=><div key={i} className={`bar${i===6?' hi':''}`} style={{height:(v/maxBar*100)+'%'}} title={v+' views'}/>)}
+                </div>
+                <div className="chart-lbs">{days.map(d=><div key={d} className="cl">{d}</div>)}</div>
+              </div>
+              <div className="card">
+                <div className="card-head"><div className="card-title">Recent activity</div><button className="card-action" onClick={()=>nav('bookings')}>See bookings</button></div>
+                <div className="act-list">
+                  {[['book','📅','#F0FDF4','Booking: Priya R. — Hair cut','2 mins ago'],['wa','💬','#F0FDF4','WhatsApp tap from Koramangala','14 mins ago'],['view','👁️','#EFF6FF','5 new visitors from Google','1 hour ago'],['book','📅','#F0FDF4','Booking: Sunita M. — Facial','2 hours ago']].map(([t,e,bg,txt,time])=>(
+                    <div key={time} className="act-item">
+                      <div className="act-ico" style={{background:bg}}>{e}</div>
+                      <div><div className="act-t">{txt}</div><div className="act-time">{time}</div></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="card">
+              <div className="card-head"><div className="card-title">Your live site preview</div><button className="card-action" onClick={onViewSite}>Open full site →</button></div>
+              <div className="site-preview-frame">
+                <div className="spf-nav"><div className="spf-name">✂️ {biz.name}</div></div>
+                <div className="spf-body">
+                  <div className="spf-hero">
+                    <div className="spf-h">{biz.content?.headline||biz.name}</div>
+                    <div className="spf-sub">{biz.tagline}</div>
+                    <div className="spf-btns"><button className="spf-wa">💬 WhatsApp</button><button className="spf-bk">📅 Book</button></div>
+                  </div>
+                  <div className="spf-svcs">
+                    {(biz.content?.services||[]).slice(0,6).map((s,i)=>(
+                      <div key={i} className="spf-svc"><div className="spf-svc-n">{s.name}</div><div className="spf-svc-p">{s.price}</div></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* BOOKINGS */}
+          <div className={`panel${panel==='bookings'?' active':''}`}>
+            <div className="welcome-row"><h2>Bookings 📅</h2><p>Manage your appointments</p></div>
+            <div style={{display:'flex',gap:'8px',marginBottom:'16px',flexWrap:'wrap'}}>
+              {['all','pending','confirmed'].map(f=>(
+                <button key={f} className={`btn btn-sm ${bkFilter===f?'btn-primary':'btn-outline'}`} onClick={()=>setBkFilter(f)}>
+                  {f.charAt(0).toUpperCase()+f.slice(1)} ({f==='all'?bookings.length:bookings.filter(b=>b.status===f).length})
+                </button>
+              ))}
+            </div>
+            <div className="bk-list">
+              {bookings.filter(b=>bkFilter==='all'||b.status===bkFilter).map(b=>(
+                <div key={b.id} className="bk-card">
+                  <div className="bk-date"><div className="bk-day">{b.day}</div><div className="bk-mon">{b.mon}</div></div>
+                  <div className="bk-info"><div className="bk-name">{b.name}</div><div className="bk-svc">{b.svc}</div></div>
+                  <span className={`badge badge-${b.status==='confirmed'?'green':'saffron'}`}>{b.status}</span>
+                  <div className="bk-acts">
+                    {b.status==='pending'&&<button className="btn btn-sm btn-primary" onClick={()=>confirmBk(b.id)}>Confirm</button>}
+                    <button className="btn btn-sm btn-outline" onClick={()=>window.open(`https://wa.me/91${b.phone.replace(/\s/g,'')}?text=${encodeURIComponent('Hi '+b.name+', your appointment is confirmed!')}`)}>💬</button>
+                    <button className="btn btn-sm btn-ghost" style={{color:'var(--red)'}} onClick={()=>declineBk(b.id)}>×</button>
+                  </div>
+                </div>
+              ))}
+              {bookings.filter(b=>bkFilter==='all'||b.status===bkFilter).length===0&&<div style={{textAlign:'center',padding:'40px',color:'var(--g400)'}}>No {bkFilter} bookings yet</div>}
+            </div>
+          </div>
+
+          {/* EDIT SITE */}
+          <div className={`panel${panel==='edit'?' active':''}`}>
+            <div className="welcome-row"><h2>Edit your site ✏️</h2><p>Changes go live the moment you save</p></div>
+            <div className="edit-grid">
+              <div className="card">
+                <div className="card-title" style={{marginBottom:'16px'}}>Business info</div>
+                {[['Business name','name','text','e.g. Glamour Beauty Salon'],['Tagline','tagline','text','e.g. Bengaluru\'s most trusted salon'],['Area','area','text','e.g. Koramangala'],['WhatsApp number','phone','tel','98765 43210']].map(([l,k,t,ph])=>(
+                  <div key={k} className="field" style={{marginBottom:'13px'}}>
+                    <label className="label">{l}</label>
+                    <input className="input" type={t} value={editBiz?.[k]||''} onChange={e=>setEditBiz({...editBiz,[k]:e.target.value})} placeholder={ph}/>
+                  </div>
+                ))}
+                <div className="field">
+                  <label className="label">About your business</label>
+                  <textarea className="input" style={{height:'90px',resize:'none',lineHeight:'1.5'}} value={editBiz?.content?.about||''} onChange={e=>setEditBiz({...editBiz,content:{...editBiz.content,about:e.target.value}})}/>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-title" style={{marginBottom:'16px'}}>Services &amp; prices</div>
+                {svcs.map((s,i)=>(
+                  <div key={i} className="svc-row">
+                    <input className="input" value={s.name} onChange={e=>{const n=[...svcs];n[i]={...n[i],name:e.target.value};setSvcs(n);}} placeholder="Service name"/>
+                    <input className="input" value={s.price} onChange={e=>{const n=[...svcs];n[i]={...n[i],price:e.target.value};setSvcs(n);}} placeholder="₹Price" style={{maxWidth:'90px'}}/>
+                    <button className="svc-del" onClick={()=>setSvcs(svcs.filter((_,j)=>j!==i))}>×</button>
+                  </div>
+                ))}
+                <button className="add-svc" onClick={()=>setSvcs([...svcs,{name:'',price:''}])}>+ Add a service</button>
+                <div className="card" style={{marginTop:'14px',background:'var(--saffron-bg)',border:'1px solid rgba(255,107,0,.15)'}}>
+                  <div style={{fontSize:'13px',color:'var(--saffron)',fontWeight:600,marginBottom:'4px'}}>⚡ Regenerate with AI</div>
+                  <div style={{fontSize:'13px',color:'var(--g600)',marginBottom:'10px',lineHeight:'1.5'}}>Not happy with your services list? Let AI rewrite it for your business type.</div>
+                  <button className="btn btn-sm btn-primary" onClick={async()=>{
+                    toast('Regenerating services with AI…','','⚡');
+                    try{
+                      const content=await generateSiteContent(biz);
+                      setSvcs(content.services);
+                      toast('Services updated! Save to publish.','success','✓');
+                    }catch{toast('Could not connect to AI. Try again.','error','');}
+                  }}>Regenerate services</button>
+                </div>
+              </div>
+            </div>
+            <div style={{display:'flex',alignItems:'center',marginTop:'12px',gap:'10px',flexWrap:'wrap'}}>
+              <button className="btn btn-primary" onClick={saveEdits}>Save &amp; publish changes</button>
+              {showSaveToast&&<div style={{background:'var(--green)',color:'#fff',padding:'8px 14px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'5px'}}>✓ Changes are live!</div>}
+            </div>
+          </div>
+
+          {/* AI ADVISOR */}
+          <div className={`panel${panel==='ai'?' active':''}`}>
+            <div className="welcome-row"><h2>AI Business Advisor 🤖</h2><p>Ask anything about growing your business</p></div>
+            <div className="card">
+              <div style={{fontSize:'13px',color:'var(--g500)',marginBottom:'16px',lineHeight:'1.5'}}>
+                Ask me anything: how to get more customers, what to charge, how to market on Instagram, how to handle a bad review — anything.
+              </div>
+              <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginBottom:'14px'}}>
+                {['How do I get more customers?','What should I post on Instagram?','How do I handle a bad review?','How can I increase my prices?'].map(q=>(
+                  <button key={q} className="btn btn-sm btn-outline" onClick={()=>{setAiChat(q);}}>{q}</button>
+                ))}
+              </div>
+              <div className="field">
+                <textarea className="input" style={{height:'80px',resize:'none',lineHeight:'1.5'}} value={aiChat} onChange={e=>setAiChat(e.target.value)} placeholder="Ask anything about your business…" onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askAI();}}}/>
+              </div>
+              <button className="btn btn-primary" onClick={askAI} disabled={aiLoading||!aiChat.trim()}>{aiLoading?'Thinking…':'Ask AI →'}</button>
+              {aiLoading&&<div className="ai-loading" style={{marginTop:'16px'}}><div className="ai-dot"/><div className="ai-dot"/><div className="ai-dot"/><span>Claude is thinking…</span></div>}
+              {aiReply&&<div style={{marginTop:'16px',background:'var(--g50)',border:'1px solid var(--g100)',borderRadius:'10px',padding:'16px'}}>
+                <div style={{fontSize:'12px',fontWeight:600,color:'var(--saffron)',marginBottom:'8px',textTransform:'uppercase',letterSpacing:'.06em'}}>AI Response</div>
+                <div className="ai-content">{aiReply}</div>
+              </div>}
+            </div>
+          </div>
+
+          {/* SETTINGS */}
+          <div className={`panel${panel==='settings'?' active':''}`}>
+            <div className="welcome-row"><h2>Settings ⚙️</h2><p>Control how your site works</p></div>
+            <div className="card">
+              <div style={{fontFamily:'Outfit',fontWeight:700,fontSize:'15px',marginBottom:'12px',paddingBottom:'10px',borderBottom:'1px solid var(--g100)'}}>Features</div>
+              {[['whatsapp','WhatsApp button','Show a WhatsApp chat button on your site'],['booking','Appointment booking','Let customers book appointments directly'],['maps','Google Maps','Show your location on the site'],['reviews','Customer reviews','Show Google reviews on your site'],['hindi','Hindi language','Show a Hindi version of your site']].map(([k,t,d])=>(
+                <div key={k} className="toggle-row">
+                  <div><div className="tr-title">{t}</div><div className="tr-desc">{d}</div></div>
+                  <label className="toggle"><input type="checkbox" checked={featureToggles[k]} onChange={e=>{setFeatureToggles({...featureToggles,[k]:e.target.checked});toast(t+' '+(e.target.checked?'enabled':'disabled'),'','');}}/>  <span className="slider"/></label>
+                </div>
+              ))}
+              <div style={{fontFamily:'Outfit',fontWeight:700,fontSize:'15px',margin:'16px 0 12px',paddingBottom:'10px',borderBottom:'1px solid var(--g100)'}}>Notifications</div>
+              {[['wa_alerts','WhatsApp alerts for bookings','Get a WhatsApp message for every new booking'],['weekly_report','Weekly performance summary','Get a weekly report on WhatsApp']].map(([k,t,d])=>(
+                <div key={k} className="toggle-row">
+                  <div><div className="tr-title">{t}</div><div className="tr-desc">{d}</div></div>
+                  <label className="toggle"><input type="checkbox" checked={featureToggles[k]} onChange={e=>{setFeatureToggles({...featureToggles,[k]:e.target.checked});toast(t+' '+(e.target.checked?'enabled':'disabled'),'','');}}/>  <span className="slider"/></label>
+                </div>
+              ))}
+              <button className="btn btn-primary btn-sm" style={{marginTop:'16px'}} onClick={()=>toast('Settings saved ✓','success','')}>Save settings</button>
+            </div>
+          </div>
+
+          {/* PLAN */}
+          <div className={`panel${panel==='plan'?' active':''}`}>
+            <div className="welcome-row"><h2>Your plan ⭐</h2><p>Manage your subscription</p></div>
+            <div className="card">
+              <div className="plan-hero">
+                <div><div className="plan-name-big">Pro Plan</div><div className="plan-renewal">Trial · Renews 11 July 2025</div></div>
+                <div className="plan-price-big">₹599<sub>/mo</sub></div>
+              </div>
+              <p style={{fontSize:'14px',color:'var(--g500)',marginBottom:'18px',lineHeight:'1.5'}}>Upgrade to Business to unlock SEO boost, WhatsApp catalog, unlimited pages, and priority support.</p>
+              <div className="price-grid" style={{marginTop:0}}>
+                {[
+                  {name:'Pro',price:'₹599',current:true,feats:['5-page website','Custom domain','Appointment booking','Analytics dashboard']},
+                  {name:'Business',price:'₹999',current:false,feats:['Unlimited pages','SEO boost','WhatsApp catalog','Priority support']}
+                ].map(p=>(
+                  <div key={p.name} className={`pc${!p.current?' pop':''}`} style={{padding:'20px'}}>
+                    {!p.current&&<div className="pop-tag">Upgrade</div>}
+                    <div className="pc-name">{p.name}</div>
+                    <div className="pc-price" style={{fontSize:'28px'}}>{p.price}<sub>/month</sub></div>
+                    <ul className="pc-feats" style={{marginTop:'12px',marginBottom:'14px'}}>{p.feats.map(f=><li key={f}><span className="ck">✓</span>{f}</li>)}</ul>
+                    {p.current?<div className="badge badge-green" style={{fontSize:'12px',padding:'5px 12px'}}>Current plan</div>:<button className="btn btn-primary btn-sm" style={{width:'100%'}} onClick={()=>toast('Upgrade coming soon! We\'ll notify you.','','⭐')}>Upgrade to Business</button>}
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:'16px',background:'var(--g50)',border:'1px solid var(--g100)',borderRadius:'12px',padding:'16px'}}>
+                <div style={{fontWeight:600,fontSize:'14px',marginBottom:'4px'}}>💳 Payment</div>
+                <div style={{fontSize:'13px',color:'var(--g500)',marginBottom:'10px'}}>Secure payments via Razorpay. UPI, cards, net banking accepted.</div>
+                <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+                  {['UPI','Visa','Mastercard','Rupay','Net Banking'].map(m=><span key={m} className="badge badge-gray">{m}</span>)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────── GENERATED SITE ─────────────── */
+function GeneratedSite({biz,onBack}){
+  const [bookForm,setBookForm]=useState({name:'',phone:'',svc:'',date:'',time:'9:00 AM'});
+  const [booked,setBooked]=useState(false);
+  const c=biz.content||{};
+
+  function submitBook(){
+    if(!bookForm.name||!bookForm.phone||!bookForm.svc){toast('Please fill in all fields','error','');return;}
+    const msg=encodeURIComponent(`Hi! I'd like to book an appointment.\nName: ${bookForm.name}\nService: ${bookForm.svc}\nDate: ${bookForm.date||'Flexible'}\nTime: ${bookForm.time}`);
+    window.open(`https://wa.me/91${(biz.phone||'').replace(/\s/g,'')}?text=${msg}`,'_blank');
+    setBooked(true);
+  }
+
+  return(
+    <div className="gen-site" style={{paddingBottom:'60px'}}>
+      <a onClick={onBack} className="sb-credit" style={{cursor:'pointer'}}>
+        <div className="sb-credit-dot"/><span className="sb-credit-txt">Built with</span><span className="sb-credit-brand">site<span>bana</span></span>
+      </a>
+
+      <header className="gs-header">
+        <div className="gs-logo">✂️ {biz.name}</div>
+        <a href={`tel:+91${(biz.phone||'').replace(/\s/g,'')}`} className="gs-call">📞 Call</a>
+      </header>
+
+      <div className="gs-hero">
+        <div className="gs-rating">⭐ 4.8 · 124 reviews</div>
+        <h1 className="gs-h1">{biz.name}</h1>
+        <div className="gs-loc">📍 {biz.area&&biz.area!==biz.city?biz.area+', ':''}{biz.city}</div>
+        <p className="gs-tag">{c.tagline||biz.tagline}</p>
+        <div className="gs-btns">
+          <button className="gs-wa" onClick={()=>window.open(`https://wa.me/91${(biz.phone||'9999999999').replace(/\s/g,'')}?text=${encodeURIComponent(c.whatsapp_greeting||`Hi! I want to book at ${biz.name}.`)}`)}>💬 WhatsApp us</button>
+          <button className="gs-bk" onClick={()=>document.getElementById('bk-form')?.scrollIntoView({behavior:'smooth'})}>📅 Book now</button>
+        </div>
+        <div className="gs-hours"><span className="gs-open">Open now</span>{c.hours||'Mon–Sat 9am–8pm'}</div>
+      </div>
+
+      <div className="gs-section">
+        <div className="gs-sec-t">Our services</div>
+        <div className="gs-sec-s">All services include a free consultation</div>
+        <div className="gs-svcs">
+          {(c.services||[]).map((s,i)=>(
+            <div key={i} className="gs-svc">
+              <div className="gs-svc-n">{s.name}</div>
+              <div className="gs-svc-p">{s.price}</div>
+              {s.duration&&<div className="gs-svc-t">~{s.duration}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{height:'1px',background:'var(--g100)',maxWidth:'640px',margin:'0 auto'}}/>
+
+      <div className="gs-section">
+        <div className="gs-sec-t">About us</div>
+        <div className="gs-about">
+          <div style={{fontSize:'28px'}}>🌟</div>
+          <div className="gs-about-t">{c.about||`${biz.name} is a trusted ${biz.type} in ${biz.city}.`}</div>
+        </div>
+      </div>
+
+      <div style={{height:'1px',background:'var(--g100)',maxWidth:'640px',margin:'0 auto'}}/>
+
+      <div className="gs-bk-form" id="bk-form">
+        <div className="gs-form-inner">
+          <div className="gs-sec-t" style={{marginBottom:'4px'}}>Book an appointment 📅</div>
+          <div className="gs-sec-s" style={{marginBottom:'14px'}}>We'll confirm via WhatsApp within 30 minutes</div>
+          <div className="gs-form">
+            {!booked?<>
+              <div className="field" style={{marginBottom:'13px'}}><label className="label">Your name</label><input className="input" value={bookForm.name} onChange={e=>setBookForm({...bookForm,name:e.target.value})} placeholder="e.g. Priya Sharma"/></div>
+              <div className="field" style={{marginBottom:'13px'}}><label className="label">Phone / WhatsApp</label><input className="input" type="tel" value={bookForm.phone} onChange={e=>setBookForm({...bookForm,phone:e.target.value})} placeholder="98765 43210"/></div>
+              <div className="field" style={{marginBottom:'13px'}}>
+                <label className="label">Service</label>
+                <select className="input" value={bookForm.svc} onChange={e=>setBookForm({...bookForm,svc:e.target.value})} style={{backgroundImage:'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\' viewBox=\'0 0 12 8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%23868E96\' stroke-width=\'1.5\' fill=\'none\'/%3E%3C/svg%3E")',backgroundRepeat:'no-repeat',backgroundPosition:'right 14px center',paddingRight:'40px',WebkitAppearance:'none'}}>
+                  <option value="">Select a service…</option>
+                  {(c.services||[]).map((s,i)=><option key={i}>{s.name} — {s.price}</option>)}
+                </select>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',marginBottom:'13px'}}>
+                <div className="field"><label className="label">Date</label><input className="input" type="date" value={bookForm.date} onChange={e=>setBookForm({...bookForm,date:e.target.value})} min={new Date().toISOString().split('T')[0]}/></div>
+                <div className="field">
+                  <label className="label">Time</label>
+                  <select className="input" value={bookForm.time} onChange={e=>setBookForm({...bookForm,time:e.target.value})} style={{WebkitAppearance:'none'}}>
+                    {['9:00 AM','10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM'].map(t=><option key={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button className="btn btn-primary" style={{width:'100%',padding:'13px',fontSize:'15px'}} onClick={submitBook}>Confirm appointment →</button>
+            </>:<div style={{textAlign:'center',padding:'20px 0'}}>
+              <div style={{fontSize:'36px',marginBottom:'10px'}}>🎉</div>
+              <div style={{fontFamily:'Outfit',fontWeight:800,fontSize:'20px',marginBottom:'6px'}}>Booking sent!</div>
+              <div style={{fontSize:'14px',color:'var(--g500)'}}>We'll confirm on WhatsApp shortly.</div>
+            </div>}
+          </div>
+        </div>
+      </div>
+
+      <div style={{height:'1px',background:'var(--g100)',maxWidth:'640px',margin:'0 auto'}}/>
+
+      <div className="gs-section">
+        <div className="gs-sec-t">What customers say</div>
+        <div className="gs-revs">
+          {(c.reviews||[]).map((r,i)=>(
+            <div key={i} className="gs-rev">
+              <div className="gs-rev-stars">{'★'.repeat(r.stars||5)}</div>
+              <p className="gs-rev-t">"{r.text}"</p>
+              <div className="gs-rev-auth"><div className="gs-rev-av">{r.initials||r.name?.slice(0,2).toUpperCase()}</div><div><div style={{fontSize:'13px',fontWeight:600}}>{r.name}</div></div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{height:'1px',background:'var(--g100)',maxWidth:'640px',margin:'0 auto'}}/>
+
+      <div className="gs-section">
+        <div className="gs-sec-t">Find us</div>
+        <a href={`https://maps.google.com?q=${encodeURIComponent(biz.name+' '+biz.area+' '+biz.city)}`} className="gs-map" target="_blank">
+          <div style={{fontSize:'36px'}}>📍</div>
+          <div style={{fontFamily:'Outfit',fontWeight:700,fontSize:'15px',color:'#7C3AED'}}>{biz.name}</div>
+          <div style={{fontSize:'13px',color:'var(--g500)',textAlign:'center',padding:'0 16px'}}>{biz.area&&biz.area!==biz.city?biz.area+', ':''}{biz.city}</div>
+          <div style={{fontSize:'13px',fontWeight:600,color:'#7C3AED',textDecoration:'underline'}}>Get directions →</div>
+        </a>
+      </div>
+
+      <footer className="gs-footer">
+        <div className="gs-ft-n">✂️ {biz.name}</div>
+        <div className="gs-ft-a">{biz.area&&biz.area!==biz.city?biz.area+', ':''}{biz.city} · 📞 +91 {biz.phone}</div>
+        <div style={{display:'flex',justifyContent:'center',gap:'16px'}}>
+          <a href={`https://wa.me/91${(biz.phone||'').replace(/\s/g,'')}`} style={{color:'rgba(255,255,255,.4)',fontSize:'13px',textDecoration:'none'}}>WhatsApp</a>
+          <a href={`tel:+91${(biz.phone||'').replace(/\s/g,'')}`} style={{color:'rgba(255,255,255,.4)',fontSize:'13px',textDecoration:'none'}}>Call</a>
+        </div>
+        <div className="gs-ft-c">Website built with Sitebana · sitebana.vercel.app</div>
+      </footer>
+
+      <div className="gs-sticky">
+        <button className="gs-sticky-wa" onClick={()=>window.open(`https://wa.me/91${(biz.phone||'').replace(/\s/g,'')}?text=${encodeURIComponent(c.whatsapp_greeting||`Hi! I want to book at ${biz.name}.`)}`)}>💬 WhatsApp</button>
+        <button className="gs-sticky-bk" onClick={()=>document.getElementById('bk-form')?.scrollIntoView({behavior:'smooth'})}>📅 Book now</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
